@@ -1,0 +1,31 @@
+//BulkApi (Soap式) curlCommand
+// \ option ¥
+https://developer.salesforce.com/docs/atlas.en-us.api_asynch.meta/api_asynch/asynch_api_quickstart_requests_intro.htm
+Loacle 環境
+cd /mnt/c/Users/ryoichi.tachibana/curlTest
+
+Step 1. login
+curl https://login.salesforce.com/services/Soap/u/46.0 -H "Content-Type: text/xml; charset=UTF-8" -H "SOAPAction: login" -d @login.txt
+
+<sessionId>00D2v0000013Xa7\!AQ0AQB34GD19M1rTgjzUiG7CKEpAI.pLE_KZ5EcIcF0NG2kr490qO.TPXntscVc0Wg.FLB0mxjAdMify7Mcc5ze1vd9Ya3v5</sessionId>
+
+Step 2. Create a Job
+curl https://curious-panda-vpcryr-dev-ed.my.salesforce.com/services/async/46.0/job -H "X-SFDC-Session: 00D2v0000013Xa7\!AQ0AQB34GD19M1rTgjzUiG7CKEpAI.pLE_KZ5EcIcF0NG2kr490qO.TPXntscVc0Wg.FLB0mxjAdMify7Mcc5ze1vd9Ya3v5" -H "Content-Type: application/xml; charset=UTF-8" -d @register_job.xml
+
+-----------------------------------------
+<id>7502v00000FAAdiAAH</id>
+
+Step 3: Add a Batch to the Job
+curl https://curious-panda-vpcryr-dev-ed.my.salesforce.com/services/async/46.0/job/7502v00000FAAdiAAH/batch -H "X-SFDC-Session: 00D2v0000013Xa7\!AQ0AQB34GD19M1rTgjzUiG7CKEpAI.pLE_KZ5EcIcF0NG2kr490qO.TPXntscVc0Wg.FLB0mxjAdMify7Mcc5ze1vd9Ya3v5" -H "Content-Type: text/csv; charset=UTF-8" --data-binary @TestChild.csv
+
+----------------------------------
+<id>7512v00000LbcO4AAJ</id>
+
+Step 4: Check Batch Status
+curl https://curious-panda-vpcryr-dev-ed.my.salesforce.com/services/async/46.0/job/7502v00000FAAdiAAH/batch/7512v00000LbcO4AAJ -H "X-SFDC-Session: 00D2v0000013Xa7\!AQ0AQB34GD19M1rTgjzUiG7CKEpAI.pLE_KZ5EcIcF0NG2kr490qO.TPXntscVc0Wg.FLB0mxjAdMify7Mcc5ze1vd9Ya3v5"
+
+Step 5: Close the Job
+curl https://curious-panda-vpcryr-dev-ed.my.salesforce.com/services/async/46.0/job/7502v00000FAAdiAAH -H "X-SFDC-Session: 00D2v0000013Xa7\!AQ0AQB34GD19M1rTgjzUiG7CKEpAI.pLE_KZ5EcIcF0NG2kr490qO.TPXntscVc0Wg.FLB0mxjAdMify7Mcc5ze1vd9Ya3v5" -H "Content-Type: application/xml; charset=UTF-8" -d @close_job.xml
+
+Step 6: Retrieve Batch Results
+curl https://curious-panda-vpcryr-dev-ed.my.salesforce.com/services/async/46.0/job/7502v00000FAAdiAAH/batch/7512v00000LbcO4AAJ/result -H "X-SFDC-Session: 00D2v0000013Xa7\!AQ0AQB34GD19M1rTgjzUiG7CKEpAI.pLE_KZ5EcIcF0NG2kr490qO.TPXntscVc0Wg.FLB0mxjAdMify7Mcc5ze1vd9Ya3v5"
